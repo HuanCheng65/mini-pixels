@@ -23,37 +23,43 @@
 //
 //#include "writer/ColumnWriterBuilder.h"
 #include "writer/ColumnWriterBuilder.h"
+#include "writer/DateColumnWriter.h"
 #include "writer/IntegerColumnWriter.h"
 
-std::shared_ptr<ColumnWriter> ColumnWriterBuilder::newColumnWriter(std::shared_ptr<TypeDescription> type, std::shared_ptr<PixelsWriterOption> writerOption) {
-    switch(type->getCategory()) {
-        case TypeDescription::SHORT:
-        case TypeDescription::INT:
-        case TypeDescription::LONG:
-//            return std::dynamic_pointer_cast<ColumnWriter,IntegerColumnWriter>(std::make_shared<IntegerColumnWriter>(type, writerOption));
-            return std::make_shared<IntegerColumnWriter>(type, writerOption);
-        case TypeDescription::BOOLEAN:
-            break;
-        case TypeDescription::BYTE:
-            break;
-        case TypeDescription::FLOAT:
-            break;
-        case TypeDescription::DOUBLE:
-            break;
-        case TypeDescription::STRING:
-            break;
-        case TypeDescription::TIME:
-            break;
-        case TypeDescription::VARBINARY:
-            break;
-        case TypeDescription::BINARY:
-            break;
-        case TypeDescription::STRUCT:
-            break;
-        default:
-            throw InvalidArgumentException("bad column type in ColumnWriterBuilder: " + std::to_string(type->getCategory()));
+std::shared_ptr<ColumnWriter> ColumnWriterBuilder::newColumnWriter(
+    std::shared_ptr<TypeDescription> type,
+    std::shared_ptr<PixelsWriterOption> writerOption) {
+    switch (type->getCategory()) {
+    case TypeDescription::SHORT:
+    case TypeDescription::INT:
+    case TypeDescription::LONG:
+        // return std::dynamic_pointer_cast<ColumnWriter, IntegerColumnWriter>(
+        //     std::make_shared<IntegerColumnWriter>(type, writerOption));
+        return std::make_shared<IntegerColumnWriter>(type, writerOption);
+    case TypeDescription::DATE:
+        return std::make_shared<DateColumnWriter>(type, writerOption);
+    case TypeDescription::BOOLEAN:
+        break;
+    case TypeDescription::BYTE:
+        break;
+    case TypeDescription::FLOAT:
+        break;
+    case TypeDescription::DOUBLE:
+        break;
+    case TypeDescription::STRING:
+        break;
+    case TypeDescription::TIME:
+        break;
+    case TypeDescription::VARBINARY:
+        break;
+    case TypeDescription::BINARY:
+        break;
+    case TypeDescription::STRUCT:
+        break;
+    default:
+        throw InvalidArgumentException(
+            "bad column type in ColumnWriterBuilder: " +
+            std::to_string(type->getCategory()));
     }
     return std::shared_ptr<ColumnWriter>();
 }
-
-
