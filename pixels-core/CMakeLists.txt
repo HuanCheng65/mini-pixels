@@ -1,5 +1,8 @@
 project(pixels-core)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
+
 set(pixels_core_cxx
         lib/PixelsReaderImpl.cpp
         lib/PixelsReaderBuilder.cpp

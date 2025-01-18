@@ -3,6 +3,8 @@ project(pixels-common)
 include(ExternalProject)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
+
 set(pixels_common_cxx
         lib/physical/storage/LocalFS.cpp
 		lib/physical/storage/LocalFSProvider.cpp

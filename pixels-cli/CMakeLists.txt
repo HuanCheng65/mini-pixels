@@ -1,6 +1,7 @@
 project(pixels-cli)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 include(ExternalProject)
 include(ProcessorCount)
@@ -15,9 +16,9 @@ endif()
 set(BOOST_LIBRARIES "program_options,regex")
 set(BOOST_BOOTSTRAP_COMMAND ./bootstrap.sh --with-libraries=${BOOST_LIBRARIES})
 set(BOOST_BUILD_TOOL ./b2)
-set(BOOST_CXXFLAGS "cxxflags=-std=c++11")
+set(BOOST_CXXFLAGS "cxxflags=-std=c++17")
 set(BOOST_GIT_REPOSITORY git@github.com:boostorg/boost.git)
-set(BOOST_GIT_TAG boost-1.74.0)
+set(BOOST_GIT_TAG boost-1.83.0)
 set(BOOST_GIT_SUBMODULES
         libs/headers libs/regex libs/program_options libs/algorithm
         # The primary dependencies for algorithm, program_options, and regex:
