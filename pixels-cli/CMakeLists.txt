@@ -72,6 +72,9 @@ set_property(TARGET Boost::regex PROPERTY IMPORTED_LOCATION ${BOOST_LIBRARY_PREF
 add_dependencies(Boost::regex boost)
 unset(SOURCE_DIR)
 
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(READLINE REQUIRED readline)
+
 set(pixels_cli_cxx
         main.cpp
         lib/executor/LoadExecutor.cpp
@@ -81,5 +84,5 @@ add_executable(pixels-cli ${pixels_cli_cxx})
 include_directories(include)
 include_directories(../pixels-core/include)
 include_directories(../pixels-common/include)
-target_link_libraries(pixels-cli
-        Boost::program_options Boost::regex duckdb)
+target_link_libraries(pixels-cli Boost::program_options Boost::regex duckdb ${READLINE_LIBRARIES})
+target_include_directories(pixels-cli PRIVATE ${READLINE_INCLUDE_DIRS})
