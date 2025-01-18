@@ -21,10 +21,10 @@
 //
 // Created by whz on 24-11-29.
 //
-//#include "writer/ColumnWriterBuilder.h"
 #include "writer/ColumnWriterBuilder.h"
 #include "writer/DateColumnWriter.h"
 #include "writer/IntegerColumnWriter.h"
+#include "writer/TimestampColumnWriter.h"
 
 std::shared_ptr<ColumnWriter> ColumnWriterBuilder::newColumnWriter(
     std::shared_ptr<TypeDescription> type,
@@ -38,6 +38,8 @@ std::shared_ptr<ColumnWriter> ColumnWriterBuilder::newColumnWriter(
         return std::make_shared<IntegerColumnWriter>(type, writerOption);
     case TypeDescription::DATE:
         return std::make_shared<DateColumnWriter>(type, writerOption);
+    case TypeDescription::TIMESTAMP:
+        return std::make_shared<TimestampColumnWriter>(type, writerOption);
     case TypeDescription::BOOLEAN:
         break;
     case TypeDescription::BYTE:

@@ -8,22 +8,29 @@
 #include "vector/ColumnVector.h"
 #include "vector/VectorizedRowBatch.h"
 
-class TimestampColumnVector: public ColumnVector {
-public:
+class TimestampColumnVector : public ColumnVector {
+  public:
     int precision;
-    long * times;
+    long *times;
     /**
-    * Use this constructor by default. All column vectors
-    * should normally be the default size.
-    */
+     * Use this constructor by default. All column vectors
+     * should normally be the default size.
+     */
     explicit TimestampColumnVector(int precision, bool encoding = false);
-    explicit TimestampColumnVector(uint64_t len, int precision, bool encoding = false);
-    void * current() override;
+    explicit TimestampColumnVector(uint64_t len, int precision,
+                                   bool encoding = false);
+    void *current() override;
     void set(int elementNum, long ts);
     ~TimestampColumnVector();
     void print(int rowCount) override;
     void close() override;
-private:
+    void add(std::string &value) override;
+    void add(bool value) override;
+    void add(int64_t value) override;
+    void add(int value) override;
+    void ensureSize(uint64_t size, bool preserveData) override;
+
+  private:
     bool isLong;
 };
-#endif //DUCKDB_TIMESTAMPCOLUMNVECTOR_H
+#endif // DUCKDB_TIMESTAMPCOLUMNVECTOR_H
