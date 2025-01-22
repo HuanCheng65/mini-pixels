@@ -18,17 +18,23 @@ class DecimalColumnVector : public ColumnVector {
     PhysicalType physical_type_;
     static long DEFAULT_UNSCALED_VALUE;
     /**
-    * Use this constructor by default. All column vectors
-    * should normally be the default size.
-    */
+     * Use this constructor by default. All column vectors
+     * should normally be the default size.
+     */
     DecimalColumnVector(int precision, int scale, bool encoding = false);
-    DecimalColumnVector(uint64_t len, int precision, int scale, bool encoding = false);
+    DecimalColumnVector(uint64_t len, int precision, int scale,
+                        bool encoding = false);
     ~DecimalColumnVector();
     void print(int rowCount) override;
     void close() override;
-    void * current() override;
-	int getPrecision();
-	int getScale();
+    void *current() override;
+    int getPrecision();
+    int getScale();
+    void add(std::string &value) override;
+    void add(bool value) override;
+    void add(int64_t value) override;
+    void add(int value) override;
+    void ensureSize(uint64_t size, bool preserveData) override;
 };
 
 #endif // PIXELS_DECIMALCOLUMNVECTOR_H
