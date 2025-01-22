@@ -32,5 +32,6 @@ class TimestampColumnVector : public ColumnVector {
 
   private:
     bool isLong;
+    long roundMicrosToPrecision(long micros, int precision);
 };
 #endif // DUCKDB_TIMESTAMPCOLUMNVECTOR_H

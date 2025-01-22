@@ -41,7 +41,7 @@ class DateColumnWriter : public ColumnWriter {
                           int *values, int curPartLength, int curPartOffset);
     bool decideNullsPadding(
         std::shared_ptr<PixelsWriterOption> writerOption) override;
-    pixels::proto::ColumnEncoding getColumnChunkEncoding() const;
+    pixels::proto::ColumnEncoding getColumnChunkEncoding() const override;
 
   private:
     bool runlengthEncoding;

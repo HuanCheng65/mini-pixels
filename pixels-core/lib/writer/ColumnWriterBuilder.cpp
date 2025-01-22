@@ -23,6 +23,7 @@
 //
 #include "writer/ColumnWriterBuilder.h"
 #include "writer/DateColumnWriter.h"
+#include "writer/DecimalColumnWriter.h"
 #include "writer/IntegerColumnWriter.h"
 #include "writer/TimestampColumnWriter.h"
 
@@ -40,6 +41,8 @@ std::shared_ptr<ColumnWriter> ColumnWriterBuilder::newColumnWriter(
         return std::make_shared<DateColumnWriter>(type, writerOption);
     case TypeDescription::TIMESTAMP:
         return std::make_shared<TimestampColumnWriter>(type, writerOption);
+    case TypeDescription::DECIMAL:
+        return std::make_shared<DecimalColumnWriter>(type, writerOption);
     case TypeDescription::BOOLEAN:
         break;
     case TypeDescription::BYTE:

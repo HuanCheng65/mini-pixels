@@ -38,5 +38,7 @@ cmake-build-*/
 .vscode/
 .cache/
 pixels/
+input/
+output/
 
 compile_commands.json

@@ -40,7 +40,7 @@ class TimestampColumnWriter : public ColumnWriter {
                                int curPartOffset);
     bool decideNullsPadding(
         std::shared_ptr<PixelsWriterOption> writerOption) override;
-    pixels::proto::ColumnEncoding getColumnChunkEncoding() const;
+    pixels::proto::ColumnEncoding getColumnChunkEncoding() const override;
 
   private:
     bool runlengthEncoding;

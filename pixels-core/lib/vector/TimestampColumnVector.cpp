@@ -4,6 +4,7 @@
 
 #include "vector/TimestampColumnVector.h"
 #include <cmath>
+#include <cstdint>
 #include <iomanip>
 #include <sstream>
 
@@ -63,8 +64,8 @@ void TimestampColumnVector::set(int elementNum, long ts) {
     if (elementNum >= writeIndex) {
         writeIndex = elementNum + 1;
     }
-    times[elementNum] = ts;
-    // TODO: isNull
+    isNull[elementNum] = false;
+    times[elementNum] = roundMicrosToPrecision(ts, precision);
 }
 
 void TimestampColumnVector::add(std::string &value) {
@@ -81,28 +82,47 @@ void TimestampColumnVector::add(std::string &value) {
         // 转换为time_t (秒数)
         std::time_t time = std::mktime(&tm);
 
-        // 处理小数部分（如果有）
-        long fraction = 0;
+        // 处理微秒部分
+        long micros = 0;
         if (ss.get() == '.') {
             std::string frac;
             ss >> frac;
-            // 根据precision处理小数部分
             if (!frac.empty()) {
-                frac = frac.substr(0, precision);
-                fraction =
-                    std::stol(frac) * std::pow(10, precision - frac.length());
+                // 处理最多6位小数（微秒）
+                frac = frac.substr(0, 6);
+                micros = std::stol(frac) * std::pow(10, 6 - frac.length());
             }
         }
 
-        // 根据precision转换为对应精度的时间戳
-        long timestamp =
-            static_cast<long>(time) * std::pow(10, precision) + fraction;
+        std::tm epoch = {};
+        epoch.tm_year = 70;
+        epoch.tm_mon = 0;
+        epoch.tm_mday = 1;
+        epoch.tm_hour = 0;
+        epoch.tm_min = 0;
+        epoch.tm_sec = 0;
+        long epoch_ts = std::mktime(&epoch);
+        long diff = time - epoch_ts;
+
+        // 转换为微秒时间戳
+        long timestamp = diff * 1000000L + micros;
+
+        // 根据精度进行舍入
+        timestamp = roundMicrosToPrecision(timestamp, precision);
 
         add(timestamp);
     } catch (const std::exception &e) {
         throw InvalidArgumentException("Failed to parse timestamp string: " +
                                        value);
     }
+}
+
+long TimestampColumnVector::roundMicrosToPrecision(long micros, int precision) {
+    if (precision < 6) {
+        long factor = std::pow(10, 6 - precision);
+        return (micros / factor) * factor;
+    }
+    return micros;
 }
 
 void TimestampColumnVector::add(bool value) {
@@ -128,12 +148,12 @@ void TimestampColumnVector::ensureSize(uint64_t size, bool preserveData) {
     if (length < size) {
         long *oldTimes = times;
         posix_memalign(reinterpret_cast<void **>(&times), 64,
-                       size * sizeof(long));
+                       size * sizeof(int64_t));
         if (preserveData) {
             std::copy(oldTimes, oldTimes + length, times);
         }
         delete[] oldTimes;
-        memoryUsage += (long)sizeof(long) * (size - length);
+        memoryUsage += (uint64_t)sizeof(uint64_t) * (size - length);
         resize(size);
     }
 }

@@ -47,7 +47,7 @@ void DateColumnVector::set(int elementNum, int days) {
         writeIndex = elementNum + 1;
     }
     dates[elementNum] = days;
-    // TODO: isNull
+    isNull[elementNum] = false;
 }
 
 void *DateColumnVector::current() {
@@ -72,9 +72,20 @@ void DateColumnVector::add(std::string &value) {
         // 转换为time_t (秒数)
         std::time_t time = std::mktime(&tm);
 
+        std::tm epoch = {};
+        epoch.tm_year = 70;
+        epoch.tm_mon = 0;
+        epoch.tm_mday = 1;
+        epoch.tm_hour = 0;
+        epoch.tm_min = 0;
+        epoch.tm_sec = 0;
+        long epoch_ts = std::mktime(&epoch);
+
+        long diff = time - epoch_ts;
+
         // 计算从1970-01-01到当前日期的天数
         // 使用86400秒 = 1天来计算
-        int days = static_cast<int>(time / 86400);
+        int days = static_cast<int>(diff / 86400);
 
         // 存储天数
         add(days);

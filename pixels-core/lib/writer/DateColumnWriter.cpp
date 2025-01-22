@@ -27,7 +27,7 @@ DateColumnWriter::DateColumnWriter(
     : ColumnWriter(type, writerOption), curPixelVector(pixelStride) {
     runlengthEncoding = encodingLevel.ge(EncodingLevel::Level::EL2);
     if (runlengthEncoding) {
-        encoder = std::make_unique<RunLenIntEncoder>();
+        encoder = std::make_unique<RunLenIntEncoder>(1, 1);
     }
 }
 
@@ -54,8 +54,8 @@ int DateColumnWriter::write(std::shared_ptr<ColumnVector> vector, int size) {
         nextPartLength = size - curPartOffset;
     }
 
-    curPartLength = nextPartLength;
-    writeCurPartTime(columnVector, values, curPartLength, curPartOffset);
+    // curPartLength = nextPartLength;
+    // writeCurPartTime(columnVector, values, curPartLength, curPartOffset);
 
     return outputStream->getWritePos();
 }
@@ -111,8 +111,8 @@ void DateColumnWriter::newPixel() {
                                          (int)curPixelVector[i]);
             }
         }
-        outputStream->putBytes(curVecPartitionBuffer->getPointer(),
-                               curVecPartitionBuffer->getWritePos());
+        outputStream->putBytes(curVecPartitionBuffer->getBuffer(),
+                               curVecPartitionBuffer->size());
     }
 
     ColumnWriter::newPixel();
